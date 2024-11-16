@@ -616,7 +616,8 @@ import torchvision.transforms as transforms
 # Initialize the Flask app
 app = Flask(__name__)
 model = CustomModel()
-model.load_state_dict(torch.load('/Users/armaanoajay/Downloads/image_classification_flask/app/model/best_model_weights.pth', map_location=torch.device('cpu')))
+model_path = os.path.join(os.path.dirname(__file__), 'model', 'best_model_weights.pth')
+model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
 model.eval()  
 
 # Define image transformation (same as used during training)
