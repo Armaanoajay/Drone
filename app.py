@@ -616,21 +616,27 @@ import gdown
 # Initialize the Flask app
 app = Flask(__name__)
 
-def download_model_from_drive():
-    file_id = "1TThJsQPdHiVcY2yCUcTy7c7Mnn1bM2F7"  # The file ID from your Google Drive link
-    url = f"https://drive.google.com/uc?export=download&id={file_id}"
-    output = "model/best_model_weights.pth"  # Local path where the model will be saved
-    gdown.download(url, output, quiet=False)
-    print("Model weights downloaded successfully.")
+# Path to save the model weights
+model_dir = os.path.join(os.path.dirname(__file__), 'model')
+model_weights_path = os.path.join(model_dir, 'best_model_weights.pth')
 
-# Check if the model weights exist, if not, download from Google Drive
-model_path = os.path.join(os.path.dirname(__file__), 'model', 'best_model_weights.pth')
-if not os.path.exists(model_path):
-    download_model_from_drive()
+# Ensure the model directory exists
+if not os.path.exists(model_dir):
+    os.makedirs(model_dir)
 
-# Load model
+# Check if the model weights file exists
+if not os.path.exists(model_weights_path):
+    print("Model weights not found. Downloading from Google Drive...")
+    # Google Drive file ID
+    gdrive_file_id = '1TThJsQPdHiVcY2yCUcTy7c7Mnn1bM2F7'  # Replace with your actual file ID
+    # Google Drive URL for direct download
+    gdown.download(f'https://drive.google.com/uc?export=download&id={gdrive_file_id}', model_weights_path, quiet=False)
+else:
+    print(f"Model weights already exist at {model_weights_path}")
+
+# Load the model
 model = CustomModel()
-model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+model.load_state_dict(torch.load(model_weights_path, map_location=torch.device('cpu')))
 model.eval()  
 
 # Define image transformation (same as used during training)
@@ -685,5 +691,7 @@ def predict():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
 
 
