@@ -612,11 +612,24 @@ from flask import Flask, request, render_template
 from PIL import Image
 from io import BytesIO
 import torchvision.transforms as transforms
-
+import gdown
 # Initialize the Flask app
 app = Flask(__name__)
-model = CustomModel()
+
+def download_model_from_drive():
+    file_id = "1TThJsQPdHiVcY2yCUcTy7c7Mnn1bM2F7"  # The file ID from your Google Drive link
+    url = f"https://drive.google.com/uc?export=download&id={file_id}"
+    output = "model/best_model_weights.pth"  # Local path where the model will be saved
+    gdown.download(url, output, quiet=False)
+    print("Model weights downloaded successfully.")
+
+# Check if the model weights exist, if not, download from Google Drive
 model_path = os.path.join(os.path.dirname(__file__), 'model', 'best_model_weights.pth')
+if not os.path.exists(model_path):
+    download_model_from_drive()
+
+# Load model
+model = CustomModel()
 model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
 model.eval()  
 
@@ -628,6 +641,7 @@ transform = transforms.Compose([
 
 # Class names
 class_names = ['building', 'flooded', 'forest', 'mountains', 'sea', 'street']
+
 @app.route('/')
 def home():
     return render_template('main.html')
@@ -637,7 +651,6 @@ def alert():
     # Logic to send alert (you can integrate an API or email here if needed)
     alert_sent = True  # Simulating successful alert send
     return render_template('main.html', alert_sent=alert_sent)
-
 
 @app.route('/predict', methods=['POST'])
 def predict():
