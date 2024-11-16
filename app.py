@@ -622,20 +622,16 @@ model_weights_path = os.path.join(model_dir, 'best_model_weights.pth')
 
 # Ensure the model directory exists
 if not os.path.exists(model_dir):
-    os.makedirs(model_dir)
+    os.makedirs(model_dir)  # Create the directory if it doesn't exist
 
-# Check if the model weights file exists
+# Download model weights if not present
 if not os.path.exists(model_weights_path):
     print("Model weights not found. Downloading from Google Drive...")
-    # Google Drive file ID
-    gdrive_file_id = '1TThJsQPdHiVcY2yCUcTy7c7Mnn1bM2F7'  # Replace with your actual file ID
-    # Google Drive URL for direct download
-    gdown.download(f'https://drive.google.com/uc?export=download&id={gdrive_file_id}', model_weights_path, quiet=False)
-else:
-    print(f"Model weights already exist at {model_weights_path}")
+    # Use gdown to download the file from Google Drive
+    gdown.download("https://drive.google.com/file/d/1TThJsQPdHiVcY2yCUcTy7c7Mnn1bM2F7/view?usp=drive_link", model_weights_path, quiet=False)
 
-# Load the model
-model = CustomModel()
+# Load the model with the downloaded weights
+model = CustomModel()  # Replace with your actual model class
 model.load_state_dict(torch.load(model_weights_path, map_location=torch.device('cpu')))
 model.eval()  
 
