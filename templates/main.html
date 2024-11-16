@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drone Scenery Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <style>
+        /* Style for the information box */
+        .info-box {
+            border: 2px solid #000;
+            padding: 20px;
+            background-color: #f4f4f4;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 250px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-box h3 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Style for the container to shift it upwards */
+        .container {
+            margin-bottom: 425px;  /* Adjust this value to shift the container upwards */
+            text-align: center;
+            border: 2px solid #000;
+        }
+
+        /* Optionally, you can place the info box at the bottom */
+        .info-box-bottom {
+            bottom: 20px;
+            top: unset;
+            position: fixed;
+            left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Title -->
+        <h1>Drone Scenery Detection System</h1>
+
+        <!-- Form to upload an image -->
+        <form action="/predict" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required>
+            <button type="submit">Upload</button>
+        </form>
+
+        <!-- Display prediction result -->
+        {% if prediction is not none %}
+            <h2>Predicted Scenery: {{ prediction }}</h2>
+        {% endif %}
+
+        <!-- Show disclaimer and alert button if flooded -->
+        {% if show_disclaimer %}
+            <div class="disclaimer">
+                <p><strong>Warning:</strong> The image indicates a flooded area. Please take necessary precautions to ensure safety and follow emergency procedures.</p>
+                <p>Would you like to alert the authorities?</p>
+                <form action="/alert" method="post">
+                    <button type="submit">Alert Authorities</button>
+                </form>
+            </div>
+        {% endif %}
+
+        <!-- Show success message if alert is sent -->
+        {% if alert_sent %}
+            <div class="alert-success">
+                <p>Alert successfully sent! Authorities have been notified.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Information Box (Top Right or Bottom Right) -->
+    <div class="info-box">
+        <h3>Sceneries Detected</h3>
+        <p><strong>Building:</strong> The system detects urban structures, such as buildings and skyscrapers.</p>
+        <p><strong>Flooded:</strong> The system detects an area affected by flooding, indicating high risk.</p>
+        <p><strong>Forest:</strong> The system detects dense forest or wooded areas with abundant vegetation.</p>
+        <p><strong>Mountains:</strong> The system detects mountainous terrains with steep inclines and rocky features.</p>
+        <p><strong>Sea:</strong> The system detects large bodies of saltwater such as oceans or seas.</p>
+        <p><strong>Street:</strong> The system detects a road or street, typically in urban or suburban areas.</p>
+    </div>
+
+</body>
+</html>
