@@ -611,27 +611,12 @@ from flask import Flask, request, render_template
 from PIL import Image
 from io import BytesIO
 import torchvision.transforms as transforms
-import gdown
+
+
 # Initialize the Flask app
 app = Flask(__name__)
-
-# Path to save the model weights
-model_dir = os.path.join(os.path.dirname(__file__), 'model')
-model_weights_path = os.path.join(model_dir, 'best_model_weights.pth')
-
-# Ensure the model directory exists
-if not os.path.exists(model_dir):
-    os.makedirs(model_dir)  # Create the directory if it doesn't exist
-
-# Download model weights if not present
-if not os.path.exists(model_weights_path):
-    print("Model weights not found. Downloading from Google Drive...")
-    # Use gdown to download the file from Google Drive
-    gdown.download("https://drive.google.com/file/d/1TThJsQPdHiVcY2yCUcTy7c7Mnn1bM2F7", model_weights_path, quiet=False)
-
-# Load the model with the downloaded weights
-model = CustomModel()  # Replace with your actual model class
-model.load_state_dict(torch.load(model_weights_path, map_location=torch.device('cpu')))
+model = CustomModel()
+model.load_state_dict(torch.load('./best_model_weights.pth', map_location=torch.device('cpu')))
 model.eval()  
 
 # Define image transformation (same as used during training)
@@ -642,7 +627,6 @@ transform = transforms.Compose([
 
 # Class names
 class_names = ['building', 'flooded', 'forest', 'mountains', 'sea', 'street']
-
 @app.route('/')
 def home():
     return render_template('main.html')
@@ -652,6 +636,7 @@ def alert():
     # Logic to send alert (you can integrate an API or email here if needed)
     alert_sent = True  # Simulating successful alert send
     return render_template('main.html', alert_sent=alert_sent)
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -683,6 +668,10 @@ def predict():
 
     # Otherwise, just show the predicted class
     return render_template('main.html', prediction=predicted_class_name, show_disclaimer=False)
+
+
+    
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Default to 5000 if PORT is not set
