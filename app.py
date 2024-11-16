@@ -627,7 +627,7 @@ if not os.path.exists(model_dir):
 if not os.path.exists(model_weights_path):
     print("Model weights not found. Downloading from Google Drive...")
     # Use gdown to download the file from Google Drive
-    gdown.download("https://drive.google.com/file/d/1TThJsQPdHiVcY2yCUcTy7c7Mnn1bM2F7/view?usp=drive_link", model_weights_path, quiet=False)
+    gdown.download("https://drive.google.com/file/d/1TThJsQPdHiVcY2yCUcTy7c7Mnn1bM2F7", model_weights_path, quiet=False)
 
 # Load the model with the downloaded weights
 model = CustomModel()  # Replace with your actual model class
