@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import zipfile
 import os
-import cv2
 
 from collections import Counter
 
