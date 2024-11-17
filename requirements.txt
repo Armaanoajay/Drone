@@ -3,3 +3,5 @@ matplotlib
 pandas
 Pillow
 flask
+gunicorn
+torch
